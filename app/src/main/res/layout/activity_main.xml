@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!--此View用来腾出状态栏的空间，设置颜色与标题栏一致-->
+    <View
+        android:id="@+id/paddingView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@android:color/holo_blue_dark"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:gravity="center"
+        android:background="@android:color/holo_blue_dark">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tv_main_title"
+            android:textSize="18sp"
+            android:textColor="#fff"
+            android:text="内容审核系统"/>
+
+    </LinearLayout>
+
+    <android.support.v4.view.ViewPager
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:id="@+id/vp_main"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray"
+        android:layout_marginBottom="5dp"/>
+
+    <RadioGroup
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/rg_tab_main"
+        android:layout_gravity="bottom"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <RadioButton
+            style="@style/style_tab_main"
+            android:id="@+id/rb_get_uncensored_article"
+            android:text="待审核"
+            android:drawableTop="@drawable/icon_tab_get_uncensored_article"
+            android:checked="true"/>
+
+        <RadioButton
+            style="@style/style_tab_main"
+            android:id="@+id/rb_get_censored_article"
+            android:text="已审核"
+            android:drawableTop="@drawable/icon_tab_get_censored_article"/>
+
+        <RadioButton
+            style="@style/style_tab_main"
+            android:id="@+id/rb_set"
+            android:text="设置"
+            android:drawableTop="@drawable/icon_tab_set"/>
+    </RadioGroup>
+
+</LinearLayout>
