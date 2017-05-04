@@ -3,11 +3,18 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ListView
+    <android.support.v4.widget.SwipeRefreshLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/lv_uncensored_article"
-        android:layout_alignParentTop="true"/>
+        android:layout_height="match_parent"
+        android:id="@+id/srl_uncensored_article">
+
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/lv_uncensored_article"
+            android:layout_alignParentTop="true"/>
+
+    </android.support.v4.widget.SwipeRefreshLayout>
 
     <TextView
         android:layout_width="wrap_content"

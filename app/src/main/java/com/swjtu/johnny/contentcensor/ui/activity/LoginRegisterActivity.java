@@ -1,231 +1,167 @@
 package com.swjtu.johnny.contentcensor.ui.activity;
 
-import android.annotation.TargetApi;
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.TextView;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.swjtu.johnny.contentcensor.R;
-import com.swjtu.johnny.contentcensor.ui.fragment.LoginFragment;
-import com.swjtu.johnny.contentcensor.ui.fragment.RegisterFragment;
+import com.swjtu.johnny.contentcensor.model.BaseActivity;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- * Created by Johnny on 2017/3/11.
+ * Created by Johnny on 2017/4/22.
  */
 
-public class LoginRegisterActivity extends FragmentActivity {
-    //当前显示的fragment
-    private static final String CURRENT_FRAGMENT = "STATE_FRAGMENT_SHOW";
+public class LoginRegisterActivity extends BaseActivity {
+    private EditText etUsername,etPassword;
+    private ImageButton ibClearUsername,ibClearPassword;
+    private Button btnLogin;
 
-    private TextView tvLoginToRegister,tvRegisterToLogin;
-    private Button btnLogin,btnRegister;
-    private FragmentManager fragmentManager;
-    private Fragment currentFragment = new Fragment();
-    private List<Fragment> fragmentList = new ArrayList<>();
-    private int currentIndex = 0;
-
-    private LoginFragment loginFragment;
-    private RegisterFragment registerFragment;
+    private RequestQueue requestQueue;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_register);
 
-        //判断当前设备版本号是否为4.4以上，如果是，则通过调用setTranslucentStatus让状态栏变透明
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            setTranslucentStatus(true);
-        }
+        requestQueue = Volley.newRequestQueue(this);
 
-        fragmentManager = getFragmentManager();
         initView();
-
-        if (savedInstanceState != null){//内存重启时调用
-            //获取内存重启时保存的索引下标
-            currentIndex = savedInstanceState.getInt(CURRENT_FRAGMENT,0);
-
-            fragmentList.removeAll(fragmentList);
-            fragmentList.add(fragmentManager.findFragmentByTag(0+""));
-            fragmentList.add(fragmentManager.findFragmentByTag(1+""));
-
-            //恢复fragment页面
-            restoreFragment();
-        }else {//正常是调用
-            LoginFragment loginFragment = new LoginFragment();
-            RegisterFragment registerFragment = new RegisterFragment();
-            fragmentList.add(loginFragment);
-            fragmentList.add(registerFragment);
-
-            switchFragment();
-        }
     }
 
-    //初始化控件
     private void initView(){
-        tvLoginToRegister = (TextView) findViewById(R.id.tv_login_to_register);
-        tvRegisterToLogin = (TextView) findViewById(R.id.tv_register_to_login);
-
+        etUsername = (EditText) findViewById(R.id.et_login_username);
+        etPassword = (EditText) findViewById(R.id.et_login_password);
+        ibClearUsername = (ImageButton) findViewById(R.id.ib_login_clear_username);
+        ibClearPassword = (ImageButton) findViewById(R.id.ib_login_clear_password);
         btnLogin = (Button) findViewById(R.id.btn_login);
-        btnRegister = (Button) findViewById(R.id.btn_register);
 
-//        loginFragment = (LoginFragment) getFragmentManager().findFragmentByTag(0+"");
-//        registerFragment = (RegisterFragment) getFragmentManager().findFragmentByTag(1+"");
-
-        //切换到注册界面点击事件
-        tvLoginToRegister.setOnClickListener(new View.OnClickListener() {
+        //用户名、密码输入框内容改变事件监听
+        etUsername.addTextChangedListener(new TextWatcher() {
             @Override
-            public void onClick(View v) {
-                currentIndex = 1;
-                switchFragment();
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
             }
-        });
 
-        //切换到登录界面点击事件
-        tvRegisterToLogin.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                currentIndex = 0;
-                switchFragment();
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
             }
-        });
 
-        //登录按钮点击事件
-        btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                loginFragment = (LoginFragment) currentFragment;
-                String username = loginFragment.getEtLoginUsername().getText().toString();
-                String password = loginFragment.getEtLoginPassword().getText().toString();
-
-                if (username.equals("admin")&&password.equals("123456")){
-                    Intent intent = new Intent(LoginRegisterActivity.this,MainActivity.class);
-                    startActivity(intent);
-                    finish();
-                    Toast.makeText(LoginRegisterActivity.this,"登录成功",Toast.LENGTH_SHORT).show();
+            public void afterTextChanged(Editable s) {
+                if(etUsername.getText().toString().isEmpty()){
+                    ibClearUsername.setVisibility(View.GONE);
+                    btnLogin.setEnabled(false);
                 }else {
-                    Toast.makeText(LoginRegisterActivity.this,"username:"+username+"\n"+"password:"+password,Toast.LENGTH_SHORT).show();
+                    ibClearUsername.setVisibility(View.VISIBLE);
+                    if (!etPassword.getText().toString().isEmpty()){
+                        btnLogin.setEnabled(true);
+                    }else {
+                        btnLogin.setEnabled(false);
+                    }
+                }
+            }
+        });
+        etPassword.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (etPassword.getText().toString().isEmpty()){
+                    ibClearPassword.setVisibility(View.GONE);
+                    btnLogin.setEnabled(false);
+                }else {
+                    ibClearPassword.setVisibility(View.VISIBLE);
+                    if (!etUsername.getText().toString().isEmpty()){
+                        btnLogin.setEnabled(true);
+                    }else {
+                        btnLogin.setEnabled(false);
+                    }
                 }
             }
         });
 
-        //注册按钮点击事件
-        btnRegister.setOnClickListener(new View.OnClickListener() {
+        //输入框清空按钮事件监听
+        ibClearUsername.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                registerFragment = (RegisterFragment) currentFragment;
-                String username = registerFragment.getEtRegisterUsername().getText().toString();
-                String password = registerFragment.getEtRegisterPassword().getText().toString();
-                String passwordCheck = registerFragment.getEtRegisterPasswordCheck().getText().toString();
-                Toast.makeText(LoginRegisterActivity.this,"username:"+username+"\n"+"password:"+password+"\n"+"passwordCheck:"+passwordCheck,Toast.LENGTH_SHORT).show();
+                etUsername.setText(null);
             }
         });
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        //内存重启时保存当前fragment名字
-        outState.putInt(CURRENT_FRAGMENT,currentIndex);
-        super.onSaveInstanceState(outState);
-    }
-
-    /**
-     * 切换界面
-     */
-    private void switchFragment(){
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-
-//        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-//        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-//        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE);
-//        transaction.setTransition(FragmentTransaction.TRANSIT_ENTER_MASK);
-//        transaction.setTransition(FragmentTransaction.TRANSIT_EXIT_MASK);
-
-        if (!fragmentList.get(currentIndex).isAdded()){
-            if (currentIndex == 1){
-                transaction.setCustomAnimations(R.animator.fragment_slide_right_in,
-                        R.animator.fragment_slide_left_out
-                );
+        ibClearPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                etPassword.setText(null);
             }
-            transaction.hide(currentFragment).add(R.id.fl_login_register,fragmentList.get(currentIndex),""+currentIndex);
-        }else {
-            if (currentIndex == 0){
-                transaction.setCustomAnimations(R.animator.fragment_slide_left_in,
-                        R.animator.fragment_slide_right_out
-                );
-            }else {
-                transaction.setCustomAnimations(R.animator.fragment_slide_right_in,
-                        R.animator.fragment_slide_left_out
-                );
+        });
+
+        //登录按钮事件监听
+        btnLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String username = etUsername.getText().toString();
+                String password = etPassword.getText().toString();
+
+                Map<String,String> params = new HashMap<>();
+                params.put("username",username);
+                params.put("password",password);
+                JSONObject jsonObject = new JSONObject(params);
+
+                JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST,
+                        "http://120.76.125.231/content_censor/login/login.php",jsonObject,
+                        new Response.Listener<JSONObject>(){
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                try {
+                                    String result = response.getString("result");
+                                    if (result.equals("succeed")){
+                                        Intent intent = new Intent(LoginRegisterActivity.this,MainActivity.class);
+                                        startActivity(intent);
+                                        finish();
+//                                        Toast.makeText(LoginRegisterActivity.this,"登录成功", Toast.LENGTH_SHORT).show();
+                                    }else if (result.equals("failed")){
+                                        Toast.makeText(LoginRegisterActivity.this,"用户名或密码错误", Toast.LENGTH_SHORT).show();
+                                    }
+                                }catch (JSONException e){
+                                    e.printStackTrace();
+                                }
+                            }
+                        },new Response.ErrorListener(){
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(LoginRegisterActivity.this,"网络连接出错", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+                requestQueue.add(jsonObjectRequest);
             }
-            transaction.hide(currentFragment).show(fragmentList.get(currentIndex));
-        }
-
-        currentFragment = fragmentList.get(currentIndex);
-
-        transaction.commit();
-    }
-
-    /**
-     *恢复fragment
-     */
-    private void restoreFragment(){
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-        for (int i = 0; i<fragmentList.size(); i++){
-            if (i == currentIndex){
-                transaction.show(fragmentList.get(i));
-            }else {
-                transaction.hide(fragmentList.get(i));
-            }
-        }
-
-        transaction.commit();
-
-        //记录当前显示的fragment
-        currentFragment = fragmentList.get(currentIndex);
-    }
-
-    //设置状态栏为透明，并取消状态栏原本所占的空间
-    @TargetApi(19)
-    private void setTranslucentStatus(boolean on) {
-        Window win = getWindow();
-        WindowManager.LayoutParams winParams = win.getAttributes();
-        final int bits = WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS;
-        if (on) {
-            winParams.flags |= bits;
-        } else {
-            winParams.flags &= ~bits;
-        }
-        win.setAttributes(winParams);
-    }
-
-    //获取各控件实例
-    public TextView getTvLoginToRegister() {
-        return tvLoginToRegister;
-    }
-
-    public TextView getTvRegisterToLogin() {
-        return tvRegisterToLogin;
-    }
-
-    public Button getBtnLogin() {
-        return btnLogin;
-    }
-
-    public Button getBtnRegister() {
-        return btnRegister;
+        });
     }
 }

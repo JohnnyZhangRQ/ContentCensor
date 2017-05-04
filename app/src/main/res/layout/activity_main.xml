@@ -8,13 +8,13 @@
         android:id="@+id/paddingView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:background="@android:color/holo_blue_dark"/>
+        android:background="#967249"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:gravity="center"
-        android:background="@android:color/holo_blue_dark">
+        android:background="#967249">
 
         <TextView
             android:layout_width="wrap_content"
@@ -22,7 +22,7 @@
             android:id="@+id/tv_main_title"
             android:textSize="18sp"
             android:textColor="#fff"
-            android:text="内容审核系统"/>
+            android:text="未审核"/>
 
     </LinearLayout>
 
@@ -50,20 +50,23 @@
             style="@style/style_tab_main"
             android:id="@+id/rb_get_uncensored_article"
             android:text="待审核"
-            android:drawableTop="@drawable/icon_tab_get_uncensored_article"
+            android:textColor="#967249"
+            android:drawableTop="@drawable/tab_get_uncensored_article"
             android:checked="true"/>
 
         <RadioButton
             style="@style/style_tab_main"
             android:id="@+id/rb_get_censored_article"
             android:text="已审核"
-            android:drawableTop="@drawable/icon_tab_get_censored_article"/>
+            android:textColor="#967249"
+            android:drawableTop="@drawable/tab_get_censored_article"/>
 
         <RadioButton
             style="@style/style_tab_main"
             android:id="@+id/rb_set"
             android:text="设置"
-            android:drawableTop="@drawable/icon_tab_set"/>
+            android:textColor="#967249"
+            android:drawableTop="@drawable/tab_set"/>
     </RadioGroup>
 
 </LinearLayout>
