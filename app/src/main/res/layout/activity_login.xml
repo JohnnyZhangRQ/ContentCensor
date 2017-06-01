@@ -13,12 +13,13 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
             android:orientation="vertical">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="内容检测系统"
+                android:text="内容审核系统"
                 android:textSize="40sp"
                 android:textColor="#967249"
                 android:layout_gravity="center_horizontal"
@@ -106,17 +107,6 @@
                 android:layout_marginTop="50dp"
                 android:text="登陆"
                 android:enabled="false"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/tv_forget_password"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="20dp"
-                android:text="忘记密码?"
-                android:textSize="16sp"
-                android:textColor="#7a7a7a" />
 
         </LinearLayout>
 

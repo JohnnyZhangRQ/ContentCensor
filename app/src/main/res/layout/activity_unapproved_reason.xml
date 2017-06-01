@@ -3,12 +3,39 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <android.support.v7.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#ffffff">
+
+        <ImageButton
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:id="@+id/ib_unapproved_reason_back"
+            android:src="@drawable/icon_back"
+            android:background="@null"
+            android:layout_gravity = "start"
+            android:layout_marginStart="20dp"
+            android:layout_marginLeft="20dp"
+            android:scaleType="centerInside"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="输入不通过理由"
+            android:textSize="15sp" />
+
+    </android.support.v7.widget.Toolbar>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="50dp">
+        android:layout_centerVertical="true"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp">
 
         <CheckBox
             android:layout_width="match_parent"
@@ -20,19 +47,22 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/cb_rumor"
-            android:text="谣言"/>
+            android:text="谣言"
+            android:layout_marginTop="30dp"/>
 
         <CheckBox
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/cb_pornographic"
-            android:text="包含淫秽色情内容"/>
+            android:text="包含淫秽色情内容"
+            android:layout_marginTop="30dp"/>
 
         <CheckBox
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/cb_other_reason"
-            android:text="其他"/>
+            android:text="其他"
+            android:layout_marginTop="30dp"/>
 
         <EditText
             android:layout_width="match_parent"
@@ -46,10 +76,13 @@
     </LinearLayout>
 
     <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        style="@style/ButtonStyle"
         android:id="@+id/btn_unapproved_reason_sure"
         android:text="确定"
-        android:layout_alignParentBottom="true"/>
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="10dp"
+        android:enabled="true"/>
 
 </RelativeLayout>

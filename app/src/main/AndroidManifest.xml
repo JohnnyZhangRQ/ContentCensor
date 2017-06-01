@@ -13,7 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name=".ui.activity.LoginRegisterActivity"
+        <activity android:name=".ui.activity.LoginActivity"
             android:windowSoftInputMode="stateHidden|adjustResize"
             android:launchMode="singleTask">
             <intent-filter>
@@ -22,11 +22,15 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".ui.activity.MainActivity"/>
+        <activity android:name=".ui.activity.MainActivity"
+            android:launchMode="singleTask"/>
 
-        <activity android:name=".ui.activity.ArticleDetailActivity"/>
+        <activity android:name=".ui.activity.ArticleDetailActivity"
+            android:windowSoftInputMode="stateHidden|adjustResize"/>
 
         <activity android:name=".ui.activity.UnapprovedReasonActivity"/>
+
+        <activity android:name=".ui.activity.UpdatePasswordActivity"/>
 
     </application>
 

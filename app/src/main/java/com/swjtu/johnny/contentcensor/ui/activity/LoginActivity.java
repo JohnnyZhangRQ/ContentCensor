@@ -1,6 +1,8 @@
 package com.swjtu.johnny.contentcensor.ui.activity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.Editable;
@@ -11,6 +13,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -30,17 +33,19 @@ import java.util.Map;
  * Created by Johnny on 2017/4/22.
  */
 
-public class LoginRegisterActivity extends BaseActivity {
+public class LoginActivity extends BaseActivity {
     private EditText etUsername,etPassword;
     private ImageButton ibClearUsername,ibClearPassword;
     private Button btnLogin;
 
     private RequestQueue requestQueue;
 
+    private ProgressDialog progressDialog;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login_register);
+        setContentView(R.layout.activity_login);
 
         requestQueue = Volley.newRequestQueue(this);
 
@@ -48,6 +53,10 @@ public class LoginRegisterActivity extends BaseActivity {
     }
 
     private void initView(){
+        progressDialog = new ProgressDialog(LoginActivity.this);
+        progressDialog.setMessage("loading...");
+        progressDialog.setCancelable(false);
+
         etUsername = (EditText) findViewById(R.id.et_login_username);
         etPassword = (EditText) findViewById(R.id.et_login_password);
         ibClearUsername = (ImageButton) findViewById(R.id.ib_login_clear_username);
@@ -126,8 +135,10 @@ public class LoginRegisterActivity extends BaseActivity {
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String username = etUsername.getText().toString();
-                String password = etPassword.getText().toString();
+                final String username = etUsername.getText().toString();
+                final String password = etPassword.getText().toString();
+
+                progressDialog.show();
 
                 Map<String,String> params = new HashMap<>();
                 params.put("username",username);
@@ -142,12 +153,22 @@ public class LoginRegisterActivity extends BaseActivity {
                                 try {
                                     String result = response.getString("result");
                                     if (result.equals("succeed")){
-                                        Intent intent = new Intent(LoginRegisterActivity.this,MainActivity.class);
+                                        if (progressDialog.isShowing()) {
+                                            progressDialog.dismiss();
+                                        }
+                                        SharedPreferences.Editor editor  = getSharedPreferences("user",MODE_PRIVATE).edit();
+                                        editor.putString("username",username);
+                                        editor.putString("password",password);
+                                        editor.apply();
+                                        Intent intent = new Intent(LoginActivity.this,MainActivity.class);
                                         startActivity(intent);
                                         finish();
-//                                        Toast.makeText(LoginRegisterActivity.this,"登录成功", Toast.LENGTH_SHORT).show();
+//                                        Toast.makeText(LoginActivity.this,"登录成功", Toast.LENGTH_SHORT).show();
                                     }else if (result.equals("failed")){
-                                        Toast.makeText(LoginRegisterActivity.this,"用户名或密码错误", Toast.LENGTH_SHORT).show();
+                                        if (progressDialog.isShowing()) {
+                                            progressDialog.dismiss();
+                                        }
+                                        Toast.makeText(LoginActivity.this,"用户名或密码错误", Toast.LENGTH_SHORT).show();
                                     }
                                 }catch (JSONException e){
                                     e.printStackTrace();
@@ -156,10 +177,14 @@ public class LoginRegisterActivity extends BaseActivity {
                         },new Response.ErrorListener(){
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(LoginRegisterActivity.this,"网络连接出错", Toast.LENGTH_SHORT).show();
+                        if (progressDialog.isShowing()) {
+                            progressDialog.dismiss();
+                        }
+                        Toast.makeText(LoginActivity.this,"网络连接出错", Toast.LENGTH_SHORT).show();
                     }
                 });
 
+                jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(5*1000,1,1.0f));
                 requestQueue.add(jsonObjectRequest);
             }
         });

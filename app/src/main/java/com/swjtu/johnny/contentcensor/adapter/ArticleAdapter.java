@@ -16,6 +16,8 @@ import com.swjtu.johnny.contentcensor.model.Article;
 
 import java.util.List;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 /**
  * Created by Johnny on 2017/4/5.
  */
@@ -39,7 +41,7 @@ public class ArticleAdapter extends ArrayAdapter<Article> {
         if (convertView == null){
             view = LayoutInflater.from(getContext()).inflate(resourceId,null);
             viewHolder = new ViewHolder();
-            viewHolder.ivArticle = (ImageView) view.findViewById(R.id.iv_article);
+            viewHolder.ivArticle = (CircleImageView) view.findViewById(R.id.iv_article);
             viewHolder.tvTitle = (TextView) view.findViewById(R.id.tv_article_title);
             viewHolder.tvState = (TextView) view.findViewById(R.id.tv_article_state);
             viewHolder.tvTime = (TextView) view.findViewById(R.id.tv_article_time);
@@ -49,7 +51,7 @@ public class ArticleAdapter extends ArrayAdapter<Article> {
             viewHolder = (ViewHolder) view.getTag();
         }
 
-        viewHolder.ivArticle.setImageResource(R.drawable.icon_article);
+        viewHolder.ivArticle.setImageBitmap(article.getIcon());
         viewHolder.tvTitle.setText(article.getTitle());
         viewHolder.tvState.setText(article.getState());
         viewHolder.tvTime.setText(article.getTime());
@@ -57,7 +59,7 @@ public class ArticleAdapter extends ArrayAdapter<Article> {
     }
 
     class ViewHolder {   //对控件的实例进行缓存
-        ImageView ivArticle;
+        CircleImageView ivArticle;
         TextView tvTitle;
         TextView tvState;
         TextView tvTime;

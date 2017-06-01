@@ -3,25 +3,25 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.v4.widget.SwipeRefreshLayout
+    <com.swjtu.johnny.contentcensor.model.SwipeRefreshView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/srl_uncensored_article">
+        android:id="@+id/srv_approved_article">
 
         <ListView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/lv_uncensored_article"
+            android:layout_height="wrap_content"
+            android:id="@+id/lv_approved_article"
             android:layout_alignParentTop="true"
             android:divider="@null"/>
 
-    </android.support.v4.widget.SwipeRefreshLayout>
+    </com.swjtu.johnny.contentcensor.model.SwipeRefreshView>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/tv_no_uncensored_article"
-        android:text="暂无未审核文章"
+        android:id="@+id/tv_no_approved_article"
+        android:text="暂无已通过文章"
         android:layout_centerInParent="true"/>
 
 </RelativeLayout>

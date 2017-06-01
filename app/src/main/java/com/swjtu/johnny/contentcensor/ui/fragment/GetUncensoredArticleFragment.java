@@ -4,11 +4,15 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,11 +21,22 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.swjtu.johnny.contentcensor.R;
 import com.swjtu.johnny.contentcensor.adapter.ArticleAdapter;
 import com.swjtu.johnny.contentcensor.db.MyDatabaseHelper;
 import com.swjtu.johnny.contentcensor.model.Article;
 import com.swjtu.johnny.contentcensor.ui.activity.ArticleDetailActivity;
+import com.swjtu.johnny.contentcensor.util.BitmapBase64Util;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,19 +46,24 @@ import java.util.List;
  */
 
 public class GetUncensoredArticleFragment extends Fragment {
+    String TAG = getClass().getSimpleName();
+
     private View view;
     private TextView tvNoUncensoredArticle;
     private ListView lvUncensoredArticle;
-    private MyDatabaseHelper dbHelper;
-    private List<Article> articleList = new ArrayList<>();
+    private static List<Article>  articleList = new ArrayList<>();
     private SwipeRefreshLayout srlUncensoredArticle;
     private ArticleAdapter adapter;
+
+    private RequestQueue requestQueue;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_get_uncensored_article,container,false);
-        dbHelper = new MyDatabaseHelper(getActivity(),"ContentCensor.db",null,1);
+
+        requestQueue = Volley.newRequestQueue(getActivity());
+
         initView();
         return view;
     }
@@ -51,27 +71,14 @@ public class GetUncensoredArticleFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        articleList.clear();
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        //查询Book表中的所有数据
-        Cursor cursor = db.query("Article",null,"state = ?",new String[]{"未审核"},null,null,null);
-        if (cursor.moveToFirst()){
-            tvNoUncensoredArticle.setVisibility(View.GONE);
-            do {
-                //遍历cursor对象，取出数据并打印
-                int id = cursor.getInt(cursor.getColumnIndex("id"));
-                String title = cursor.getString(cursor.getColumnIndex("title"));
-                String state = cursor.getString(cursor.getColumnIndex("state"));
 
-                Article article = new Article(id,title,state,"");
-                articleList.add(article);
-            }while (cursor.moveToNext());
-        }else {
-            tvNoUncensoredArticle.setVisibility(View.VISIBLE);
-        }
         adapter = new ArticleAdapter(getActivity(),R.layout.list_article,articleList);
         lvUncensoredArticle.setAdapter(adapter);
-        cursor.close();
+        if (articleList.isEmpty()){
+            tvNoUncensoredArticle.setVisibility(View.VISIBLE);
+        }else {
+            tvNoUncensoredArticle.setVisibility(View.GONE);
+        }
     }
 
     private void initView(){
@@ -84,26 +91,60 @@ public class GetUncensoredArticleFragment extends Fragment {
             @Override
             public void onRefresh() {
                 if (articleList.isEmpty()){
-                    SQLiteDatabase db = dbHelper.getWritableDatabase();
-                    ContentValues values = new ContentValues();
-                    //插入数据
-                    values.put("title","测试标题");
-                    values.put("content", "测试正文");
-                    values.put("state", "未审核");
-                    values.put("time", "");
-                    db.insert("Article", null, values);
-                    values.clear();
+                    JsonObjectRequest jsonObjectRequest = new JsonObjectRequest("http://120.76.125.231/content_censor/article/get_uncensored_article.php",null,
+                            new Response.Listener<JSONObject>(){
+                                @Override
+                                public void onResponse(JSONObject response) {
+//                                    articleList.clear();
+                                    try {
+                                        JSONObject param = response.getJSONObject("param");
+                                        int count = response.getInt("uncensored_article_count");
+                                        if (count == 0){
+                                            Toast.makeText(getActivity(),"暂无待审核文章",Toast.LENGTH_SHORT).show();
+                                            tvNoUncensoredArticle.setVisibility(View.VISIBLE);
+                                        }else {
+//                                            for (int i = 0;i<count;i++){
+                                                JSONObject articleJson = param.getJSONObject(String.valueOf(0));
+                                                String articleId = articleJson.getString("article_id");
+                                                Bitmap articleIcon = BitmapBase64Util.base64ToBitmap(articleJson.getString("article_icon"));
+                                                String articleTitle = articleJson.getString("article_title");
+//                                                String articleContent = articleJson.getString("article_content");
+                                                String articleCreateTime = articleJson.getString("article_create_time");
+
+                                                Log.e(TAG,articleId);
+//                                                Log.e(TAG,articleIcon);
+                                                Log.e(TAG,articleTitle);
+//                                                Log.e(TAG,articleContent);
+                                                Log.e(TAG,articleCreateTime);
+
+                                                Article article = new Article(Integer.valueOf(articleId),articleIcon,articleTitle,"未审核",articleCreateTime);
+                                                articleList.add(article);
+                                                adapter = new ArticleAdapter(getActivity(),R.layout.list_article,articleList);
+                                                lvUncensoredArticle.setAdapter(adapter);
+//                                            }
+                                            tvNoUncensoredArticle.setVisibility(View.GONE);
+                                        }
+                                    }catch (JSONException e){
+                                        e.printStackTrace();
+                                    }
+                                    srlUncensoredArticle.setRefreshing(false);
+                                }
+
+                            },new Response.ErrorListener(){
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    Toast.makeText(getActivity(),"网络连接失败",Toast.LENGTH_SHORT).show();
+                                    srlUncensoredArticle.setRefreshing(false);
+                                }
+                            });
+
+                    jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(5*1000,1,1.0f));
+                    requestQueue.add(jsonObjectRequest);
                 }else {
                     Toast.makeText(getActivity(),"您还有未审核的文章",Toast.LENGTH_SHORT).show();
+                    srlUncensoredArticle.setRefreshing(false);
                 }
 
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                     public void run() {
-                        onResume();
-                        srlUncensoredArticle.setRefreshing(false);
-                    }
-                }, 3000);
             }
         });
 
@@ -114,10 +155,19 @@ public class GetUncensoredArticleFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Article article = articleList.get(position);
                 int articleId = article.getId();
+                String articleCensorState = article.getState();
                 Intent intent = new Intent(getActivity(), ArticleDetailActivity.class);
                 intent.putExtra("article_id",articleId);
+                intent.putExtra("article_censor_state",articleCensorState);
                 startActivity(intent);
             }
         });
+    }
+
+    /**
+     * 获取articleList
+     */
+    public static List<Article> getArticleList() {
+        return articleList;
     }
 }

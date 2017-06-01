@@ -1,6 +1,7 @@
 package com.swjtu.johnny.contentcensor.ui.activity;
 
 import android.annotation.TargetApi;
+import android.content.Intent;
 import android.os.Build;
 import android.support.annotation.IdRes;
 import android.support.v4.app.Fragment;
@@ -8,19 +9,23 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.DrawerLayout;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.swjtu.johnny.contentcensor.R;
 import com.swjtu.johnny.contentcensor.adapter.MainFragmentPagerAdapter;
-import com.swjtu.johnny.contentcensor.ui.fragment.GetCensoredArticleFragment;
+import com.swjtu.johnny.contentcensor.ui.fragment.GetApprovedArticleFragment;
+import com.swjtu.johnny.contentcensor.ui.fragment.GetUnapprovedArticleFragment;
 import com.swjtu.johnny.contentcensor.ui.fragment.GetUncensoredArticleFragment;
-import com.swjtu.johnny.contentcensor.ui.fragment.SetFragment;
 
 import java.util.ArrayList;
 
@@ -31,10 +36,13 @@ import java.util.ArrayList;
 public class MainActivity extends FragmentActivity {
     private ViewPager vpMain;
     private RadioGroup rgTabMain;
-    private RadioButton rbGetUncensoredArticle,rbGetCensoredArticle,rbSet;
+    private RadioButton rbGetUncensoredArticle, rbGetApprovedArticle,rbGetUnapprovedArticle;
     private TextView tvMainTitle;
     private ArrayList<Fragment> fragmentList;
     private View paddingView;
+    private ImageView ivSet;
+    private Button btnUpdatePassword,btnExit;
+    private DrawerLayout drawerLayout;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -46,6 +54,8 @@ public class MainActivity extends FragmentActivity {
             setTranslucentStatus(true);
         }
 
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+
         initView();
         initViewPager();
     }
@@ -55,10 +65,39 @@ public class MainActivity extends FragmentActivity {
         rgTabMain = (RadioGroup) findViewById(R.id.rg_tab_main);
 
         rbGetUncensoredArticle = (RadioButton) findViewById(R.id.rb_get_uncensored_article);
-        rbGetCensoredArticle = (RadioButton) findViewById(R.id.rb_get_censored_article);
-        rbSet = (RadioButton) findViewById(R.id.rb_set);
+        rbGetApprovedArticle = (RadioButton) findViewById(R.id.rb_get_approved_article);
+        rbGetUnapprovedArticle = (RadioButton) findViewById(R.id.rb_get_unapproved_article);
 
         tvMainTitle = (TextView) findViewById(R.id.tv_main_title);
+
+        ivSet = (ImageView) findViewById(R.id.iv_set);
+        btnUpdatePassword = (Button) findViewById(R.id.btn_set_update_password);
+        btnExit = (Button) findViewById(R.id.btn_set_exit);
+
+        ivSet.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                drawerLayout.openDrawer(Gravity.START);
+            }
+        });
+
+        btnUpdatePassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                drawerLayout.closeDrawer(Gravity.START);
+                Intent intent = new Intent(MainActivity.this,UpdatePasswordActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        btnExit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this,LoginActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
 
         //获取顶部View，动态设置高度
         paddingView = findViewById(R.id.paddingView);
@@ -74,11 +113,12 @@ public class MainActivity extends FragmentActivity {
                     case R.id.rb_get_uncensored_article:
                         current = 0;
                         break;
-                    case R.id.rb_get_censored_article:
+                    case R.id.rb_get_approved_article:
                         current = 1;
                         break;
-                    case R.id.rb_set:
+                    case R.id.rb_get_unapproved_article:
                         current = 2;
+                        break;
                 }
 
                 if (vpMain.getCurrentItem() != current){
@@ -95,13 +135,13 @@ public class MainActivity extends FragmentActivity {
         fragmentList = new ArrayList<>();
 
         Fragment getUncensoredArticleFragment = new GetUncensoredArticleFragment();
-        Fragment getCensoredArticleFragment = new GetCensoredArticleFragment();
-        Fragment setFragment = new SetFragment();
+        Fragment getApprovedArticleFragment = new GetApprovedArticleFragment();
+        Fragment getUnapprovedArticleFragment = new GetUnapprovedArticleFragment();
 
         //将各Fragment加入到数组中
         fragmentList.add(getUncensoredArticleFragment);
-        fragmentList.add(getCensoredArticleFragment);
-        fragmentList.add(setFragment);
+        fragmentList.add(getApprovedArticleFragment);
+        fragmentList.add(getUnapprovedArticleFragment);
 
         //设置ViewPager适配器
         vpMain.setAdapter(new MainFragmentPagerAdapter(getSupportFragmentManager(),fragmentList));
@@ -126,12 +166,12 @@ public class MainActivity extends FragmentActivity {
                         tvMainTitle.setText("未审核");
                         break;
                     case 1:
-                        rgTabMain.check(R.id.rb_get_censored_article);
-                        tvMainTitle.setText("已审核");
+                        rgTabMain.check(R.id.rb_get_approved_article);
+                        tvMainTitle.setText("已通过");
                         break;
                     case 2:
-                        rgTabMain.check(R.id.rb_set);
-                        tvMainTitle.setText("设置");
+                        rgTabMain.check(R.id.rb_get_unapproved_article);
+                        tvMainTitle.setText("未通过");
                         break;
                 }
             }

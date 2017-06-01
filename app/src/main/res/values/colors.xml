@@ -7,4 +7,8 @@
     <!--按钮可用和不可用时的颜色-->
     <color name="btnEnable">#967249</color>
     <color name="btnNotEnable">#ac9171</color>
+
+    <!--主界面tab文字选中和未选中时的颜色-->
+    <color name="mainTabTextChecked">#967249</color>
+    <color name="mainTabTextNotChecked">#b0b0b0</color>
 </resources>

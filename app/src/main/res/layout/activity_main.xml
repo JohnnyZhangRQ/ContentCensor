@@ -1,72 +1,135 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <!--此View用来腾出状态栏的空间，设置颜色与标题栏一致-->
-    <View
-        android:id="@+id/paddingView"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:background="#967249"/>
+    android:layout_height="match_parent"
+    android:id="@+id/drawer_layout">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:gravity="center"
-        android:background="#967249">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/tv_main_title"
-            android:textSize="18sp"
-            android:textColor="#fff"
-            android:text="未审核"/>
+        <!--此View用来腾出状态栏的空间，设置颜色与标题栏一致-->
+        <View
+            android:id="@+id/paddingView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="#967249"/>
 
-    </LinearLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="#967249">
 
-    <android.support.v4.view.ViewPager
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:id="@+id/iv_set"
+                android:src="@drawable/icon_set"
+                android:scaleType="centerInside"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="15dp"
+                android:layout_marginLeft="15dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:id="@+id/tv_main_title"
+                android:textSize="18sp"
+                android:textColor="#fff"
+                android:text="未审核"/>
+
+        </RelativeLayout>
+
+        <android.support.v4.view.ViewPager
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:id="@+id/vp_main"/>
 
-    <View
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray"
+            android:layout_marginBottom="5dp"/>
+
+        <RadioGroup
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/rg_tab_main"
+            android:layout_gravity="bottom"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <RadioButton
+                style="@style/style_tab_main"
+                android:id="@+id/rb_get_uncensored_article"
+                android:text="待审核"
+                android:textColor="@color/main_tab_text_color"
+                android:drawableTop="@drawable/tab_get_uncensored_article"
+                android:checked="true"/>
+
+            <RadioButton
+                style="@style/style_tab_main"
+                android:id="@+id/rb_get_approved_article"
+                android:text="已通过"
+                android:textColor="@color/main_tab_text_color"
+                android:drawableTop="@drawable/tab_get_approved_article" />
+
+            <RadioButton
+                style="@style/style_tab_main"
+                android:id="@+id/rb_get_unapproved_article"
+                android:text="未通过"
+                android:textColor="@color/main_tab_text_color"
+                android:drawableTop="@drawable/tab_get_unapproved_article" />
+
+        </RadioGroup>
+
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@android:color/darker_gray"
-        android:layout_marginBottom="5dp"/>
+        android:layout_height="match_parent"
+        android:id="@+id/ll_drawer_layout_set"
+        android:layout_gravity="start"
+        android:orientation="vertical"
+        android:background="#666262">
 
-    <RadioGroup
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/rg_tab_main"
-        android:layout_gravity="bottom"
-        android:gravity="center"
-        android:orientation="horizontal">
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/btn_set_update_password"
+            android:text="修改密码"
+            android:textColor="#efefd6"
+            android:textSize="13sp"
+            android:background="@null"
+            android:gravity="start|center_vertical"
+            android:paddingStart="30dp"
+            android:paddingEnd="30dp"
+            android:layout_marginTop="200dp"/>
 
-        <RadioButton
-            style="@style/style_tab_main"
-            android:id="@+id/rb_get_uncensored_article"
-            android:text="待审核"
-            android:textColor="#967249"
-            android:drawableTop="@drawable/tab_get_uncensored_article"
-            android:checked="true"/>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginTop="20dp"
+            android:background="#1FFFFFFF" />
 
-        <RadioButton
-            style="@style/style_tab_main"
-            android:id="@+id/rb_get_censored_article"
-            android:text="已审核"
-            android:textColor="#967249"
-            android:drawableTop="@drawable/tab_get_censored_article"/>
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/btn_set_exit"
+            android:text="退出登录"
+            android:textColor="#efefd6"
+            android:textSize="13sp"
+            android:background="@null"
+            android:gravity="start|center_vertical"
+            android:layout_marginTop="20dp"
+            android:paddingStart="30dp"
+            android:paddingEnd="30dp"/>
 
-        <RadioButton
-            style="@style/style_tab_main"
-            android:id="@+id/rb_set"
-            android:text="设置"
-            android:textColor="#967249"
-            android:drawableTop="@drawable/tab_set"/>
-    </RadioGroup>
+    </LinearLayout>
 
-</LinearLayout>
+</android.support.v4.widget.DrawerLayout>
