@@ -186,7 +186,7 @@ public class UpdatePasswordActivity extends BaseActivity {
                                             if (progressDialog.isShowing()) {
                                                 progressDialog.dismiss();
                                             }
-//                                            ActivityCollector.finishAll();
+                                            ActivityCollector.finishAll();
                                             Intent intent = new Intent(UpdatePasswordActivity.this,LoginActivity.class);
                                             startActivity(intent);
                                             Toast.makeText(UpdatePasswordActivity.this,"修改密码成功",Toast.LENGTH_SHORT).show();

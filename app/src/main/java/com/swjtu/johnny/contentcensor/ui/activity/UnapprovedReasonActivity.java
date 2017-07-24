@@ -25,7 +25,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.swjtu.johnny.contentcensor.R;
-import com.swjtu.johnny.contentcensor.db.MyDatabaseHelper;
 import com.swjtu.johnny.contentcensor.ui.fragment.GetApprovedArticleFragment;
 import com.swjtu.johnny.contentcensor.ui.fragment.GetUncensoredArticleFragment;
 

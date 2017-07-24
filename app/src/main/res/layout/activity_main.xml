@@ -16,7 +16,7 @@
             android:layout_height="0dp"
             android:background="#967249"/>
 
-        <RelativeLayout
+        <android.support.v7.widget.Toolbar
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:background="#967249">
@@ -36,11 +36,12 @@
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:id="@+id/tv_main_title"
+                android:layout_gravity="center_horizontal"
                 android:textSize="18sp"
                 android:textColor="#fff"
                 android:text="未审核"/>
 
-        </RelativeLayout>
+        </android.support.v7.widget.Toolbar>
 
         <android.support.v4.view.ViewPager
         android:layout_width="match_parent"
@@ -94,14 +95,14 @@
         android:id="@+id/ll_drawer_layout_set"
         android:layout_gravity="start"
         android:orientation="vertical"
-        android:background="#666262">
+        android:background="#967249">
 
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/btn_set_update_password"
             android:text="修改密码"
-            android:textColor="#efefd6"
+            android:textColor="#ffffff"
             android:textSize="13sp"
             android:background="@null"
             android:gravity="start|center_vertical"

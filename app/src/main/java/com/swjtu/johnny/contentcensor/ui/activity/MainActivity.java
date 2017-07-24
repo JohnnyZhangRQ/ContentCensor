@@ -23,6 +23,7 @@ import android.widget.TextView;
 
 import com.swjtu.johnny.contentcensor.R;
 import com.swjtu.johnny.contentcensor.adapter.MainFragmentPagerAdapter;
+import com.swjtu.johnny.contentcensor.model.BaseActivity;
 import com.swjtu.johnny.contentcensor.ui.fragment.GetApprovedArticleFragment;
 import com.swjtu.johnny.contentcensor.ui.fragment.GetUnapprovedArticleFragment;
 import com.swjtu.johnny.contentcensor.ui.fragment.GetUncensoredArticleFragment;
@@ -33,7 +34,7 @@ import java.util.ArrayList;
  * Created by Johnny on 2017/3/13.
  */
 
-public class MainActivity extends FragmentActivity {
+public class MainActivity extends BaseActivity {
     private ViewPager vpMain;
     private RadioGroup rgTabMain;
     private RadioButton rbGetUncensoredArticle, rbGetApprovedArticle,rbGetUnapprovedArticle;

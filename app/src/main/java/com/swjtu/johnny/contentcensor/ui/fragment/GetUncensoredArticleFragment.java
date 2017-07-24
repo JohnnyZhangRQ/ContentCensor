@@ -30,7 +30,6 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.swjtu.johnny.contentcensor.R;
 import com.swjtu.johnny.contentcensor.adapter.ArticleAdapter;
-import com.swjtu.johnny.contentcensor.db.MyDatabaseHelper;
 import com.swjtu.johnny.contentcensor.model.Article;
 import com.swjtu.johnny.contentcensor.ui.activity.ArticleDetailActivity;
 import com.swjtu.johnny.contentcensor.util.BitmapBase64Util;
